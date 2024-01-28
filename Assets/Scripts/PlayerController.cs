@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class PlayerController : MonoBehaviour
@@ -60,6 +61,10 @@ public class PlayerController : MonoBehaviour
         {
             ShowMenu();
         }
+        if (transform.position.y < -5)
+        {
+            ReloadLevel();
+        }
     }
 
     // This function is called when a move input is detected.
@@ -95,10 +100,24 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
             jumpCount = 0; 
         }
+
+        if (collision.gameObject.CompareTag("Hell"))
+        {
+            ReloadLevel();
+        }
+    }
+
+    void ReloadLevel()
+    {
+        // Obtén el nombre de la escena actual.
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        // Carga nuevamente la escena actual.
+        SceneManager.LoadScene(currentSceneName);
     }
 
     // FixedUpdate is called once per fixed frame-rate frame.
-   void FixedUpdate()
+    void FixedUpdate()
     {
         // Create a 3D movement vector using the X and Y inputs.
         Vector3 movement = new Vector3(movementX, 0.0f, movementY);
@@ -136,6 +155,8 @@ public class PlayerController : MonoBehaviour
         {
             // Display the win text.
             winTextObject.SetActive(true);
+
+            Invoke("LoadMenuScene", 3.0f);
         }
     }
 
@@ -147,5 +168,11 @@ public class PlayerController : MonoBehaviour
         button1Object.SetActive(isMenuVisible);
         button2Object.SetActive(isMenuVisible);
         button3Object.SetActive(isMenuVisible);
+    }
+
+    void LoadMenuScene()
+    {
+        // Obtén el nombre de la escena del menú y cárgala.
+        SceneManager.LoadScene("Mainmenu");
     }
 }
